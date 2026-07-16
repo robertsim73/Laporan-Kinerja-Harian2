@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+
+<html class="light" lang="id"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>PerformFlow - Dashboard Karyawan</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "secondary-fixed-dim": "#88d982",
+                    "primary": "#003178",
+                    "error-container": "#ffdad6",
+                    "on-tertiary-fixed-variant": "#773200",
+                    "on-surface": "#191c1e",
+                    "primary-fixed": "#d9e2ff",
+                    "on-tertiary": "#ffffff",
+                    "on-surface-variant": "#434652",
+                    "on-error-container": "#93000a",
+                    "on-secondary-fixed-variant": "#005312",
+                    "surface-tint": "#2b5bb5",
+                    "on-secondary-container": "#217128",
+                    "on-tertiary-fixed": "#331200",
+                    "on-secondary-fixed": "#002204",
+                    "on-tertiary-container": "#ffa777",
+                    "tertiary-container": "#7f3600",
+                    "surface-variant": "#e0e3e5",
+                    "primary-container": "#0d47a1",
+                    "secondary-fixed": "#a3f69c",
+                    "tertiary": "#5b2500",
+                    "surface-dim": "#d8dadc",
+                    "surface-bright": "#f8f9fb",
+                    "secondary": "#1b6d24",
+                    "inverse-on-surface": "#eff1f3",
+                    "background": "#f8f9fb",
+                    "surface-container-lowest": "#ffffff",
+                    "surface-container-highest": "#e0e3e5",
+                    "on-secondary": "#ffffff",
+                    "inverse-primary": "#b0c6ff",
+                    "surface": "#f8f9fb",
+                    "surface-container": "#eceef0",
+                    "outline-variant": "#c3c6d4",
+                    "on-background": "#191c1e",
+                    "error": "#ba1a1a",
+                    "surface-container-high": "#e6e8ea",
+                    "secondary-container": "#a0f399",
+                    "tertiary-fixed-dim": "#ffb68f",
+                    "on-primary-container": "#a1bbff",
+                    "on-error": "#ffffff",
+                    "on-primary-fixed-variant": "#00429c",
+                    "inverse-surface": "#2d3133",
+                    "primary-fixed-dim": "#b0c6ff",
+                    "on-primary": "#ffffff",
+                    "surface-container-low": "#f2f4f6",
+                    "on-primary-fixed": "#001945",
+                    "tertiary-fixed": "#ffdbca",
+                    "outline": "#737783"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "gutter": "24px",
+                    "stack_lg": "24px",
+                    "stack_md": "16px",
+                    "margin_desktop": "32px",
+                    "sidebar_width": "260px",
+                    "margin_mobile": "16px",
+                    "container_max_width": "1440px",
+                    "stack_sm": "8px"
+            },
+            "fontFamily": {
+                    "body-md": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "title-md": ["Inter"],
+                    "headline-lg-mobile": ["Inter"],
+                    "label-sm": ["Inter"],
+                    "headline-md": ["Inter"],
+                    "headline-lg": ["Inter"],
+                    "display-lg": ["Inter"],
+                    "label-md": ["Inter"],
+                    "title-lg": ["Inter"]
+            },
+            "fontSize": {
+                    "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "title-md": ["16px", {"lineHeight": "24px", "fontWeight": "600"}],
+                    "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "label-sm": ["11px", {"lineHeight": "14px", "fontWeight": "600"}],
+                    "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                    "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                    "title-lg": ["20px", {"lineHeight": "28px", "fontWeight": "600"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F5F7F9;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        .sidebar-active {
+            background-color: #0d47a1;
+            color: #ffffff;
+            font-weight: 700;
+        }
+        .card-elevation {
+            box-shadow: 0px 2px 4px rgba(0,0,0,0.05);
+        }
+        .glass-header {
+            backdrop-filter: blur(8px);
+            background-color: rgba(255, 255, 255, 0.8);
+        }
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: #0D47A1;
+            box-shadow: 0 0 0 2px rgba(13, 71, 161, 0.1);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface">
+<!-- Sidebar Navigation (Based on SideNavBar JSON) -->
+<aside class="fixed left-0 top-0 h-full w-[260px] flex flex-col p-4 z-40 bg-surface-container border-r border-outline-variant">
+<div class="flex items-center gap-3 mb-10 px-2">
+<div class="w-10 h-10 rounded-lg bg-primary flex items-center justify-center text-on-primary">
+<span class="material-symbols-outlined text-title-lg" style="font-variation-settings: 'FILL' 1;">flowsheet</span>
+</div>
+<div>
+<h1 class="font-title-lg text-title-lg font-black text-primary">Enterprise HR</h1>
+<p class="font-label-md text-label-md text-outline">Management Portal</p>
+</div>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="flex items-center gap-3 px-4 py-3 sidebar-active rounded-lg transition-all duration-200 translate-x-1" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">dashboard</span>
+<span class="font-label-md text-label-md">Beranda</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-all duration-200" href="#">
+<span class="material-symbols-outlined">history</span>
+<span class="font-label-md text-label-md">Riwayat</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-all duration-200" href="#">
+<span class="material-symbols-outlined">calendar_today</span>
+<span class="font-label-md text-label-md">Kalender</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-all duration-200" href="#">
+<span class="material-symbols-outlined">analytics</span>
+<span class="font-label-md text-label-md">Analytics</span>
+</a>
+</nav>
+<div class="mt-auto pt-6 border-t border-outline-variant space-y-1">
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-all duration-200" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-label-md text-label-md">Settings</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-all duration-200" href="#">
+<span class="material-symbols-outlined">help</span>
+<span class="font-label-md text-label-md">Support</span>
+</a>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="ml-[260px] min-h-screen">
+<!-- Header (Based on TopNavBar JSON) -->
+<header class="sticky top-0 z-50 flex items-center justify-between w-full px-margin_desktop h-16 bg-surface shadow-sm glass-header">
+<div class="flex items-center gap-4">
+<h2 class="font-title-lg text-title-lg font-bold text-primary">Dashboard Karyawan</h2>
+</div>
+<div class="flex items-center gap-6">
+<div class="flex items-center gap-4 text-on-surface-variant">
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container-low transition-colors">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container-low transition-colors">
+<span class="material-symbols-outlined">settings</span>
+</button>
+</div>
+<div class="h-8 w-[1px] bg-outline-variant"></div>
+<div class="flex items-center gap-3 cursor-pointer group">
+<div class="text-right">
+<p class="font-label-md text-label-md font-bold text-on-surface">Budi Santoso</p>
+<p class="font-label-sm text-[10px] text-outline uppercase tracking-wider">Senior Developer</p>
+</div>
+<img class="w-10 h-10 rounded-full border-2 border-primary-container object-cover" data-alt="A professional headshot of a smiling Indonesian man in his late 20s wearing a clean white business shirt, set against a soft-focus corporate office background. The lighting is natural and bright, conveying a friendly yet professional demeanor. The image is crisp and follows a modern corporate aesthetic with high-key lighting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBVtAdpAo9J8cNnZovYoinKua5EH162Wj3MVdmyOu9LpkUFYG7Qnr3gIdXzAEu49BrUFhAVw8fYd4Y05SVy4NcWb3m1MefbXyGERuqvv_k90J42t9HZidsQIdhvD2xv-q2eeHIMl1LZB2iyUt7ZFI1S5ZpQxRqStqce29EaZ2A161rONNnzzHrt5tssntqxSmg-rhUCNCc97y8v3zMujmj75GhMRo833xqXbQhSZrwAr3GB-aE9sxTK"/>
+</div>
+</div>
+</header>
+<!-- Content Grid -->
+<div class="p-gutter max-w-container_max_width mx-auto">
+<div class="grid grid-cols-12 gap-gutter">
+<!-- Left Section: Daily Report Form -->
+<div class="col-span-12 lg:col-span-8">
+<div class="bg-surface-container-lowest rounded-xl card-elevation overflow-hidden border border-outline-variant/30">
+<div class="px-6 py-4 border-b border-outline-variant flex items-center justify-between bg-surface-container-low/30">
+<div>
+<h3 class="font-title-md text-title-md text-on-surface">Input Laporan Harian</h3>
+<p class="font-body-md text-body-md text-outline">Laporkan progres tugas Anda hari ini.</p>
+</div>
+<button class="flex items-center gap-2 px-3 py-1.5 text-primary border border-primary/20 rounded-lg font-label-md text-label-md hover:bg-primary/5 transition-all" onclick="copyYesterday()">
+<span class="material-symbols-outlined text-sm">content_copy</span>
+                                Salin dari Kemarin
+                            </button>
+</div>
+<form class="p-6 space-y-stack_md" id="reportForm">
+<div class="grid grid-cols-2 gap-stack_md">
+<div class="col-span-2">
+<label class="font-label-md text-label-md text-on-surface block mb-2">Judul Tugas</label>
+<input class="w-full px-4 py-2.5 rounded-lg border border-outline-variant bg-surface-bright font-body-md text-body-md" placeholder="Contoh: Implementasi API Dashboard" type="text"/>
+</div>
+<div class="col-span-1">
+<label class="font-label-md text-label-md text-on-surface block mb-2">Kategori Proyek</label>
+<select class="w-full px-4 py-2.5 rounded-lg border border-outline-variant bg-surface-bright font-body-md text-body-md">
+<option>Pilih Proyek</option>
+<option>PerformFlow UI Upgrade</option>
+<option>Internal Management System</option>
+<option>Customer Portal Refactor</option>
+</select>
+</div>
+<div class="col-span-1">
+<label class="font-label-md text-label-md text-on-surface block mb-2">Durasi (Jam)</label>
+<div class="relative">
+<input class="w-full px-4 py-2.5 rounded-lg border border-outline-variant bg-surface-bright font-body-md text-body-md" placeholder="0.0" step="0.5" type="number"/>
+<span class="absolute right-4 top-1/2 -translate-y-1/2 text-outline font-label-md">jam</span>
+</div>
+</div>
+<div class="col-span-2">
+<label class="font-label-md text-label-md text-on-surface block mb-2">Deskripsi Pekerjaan</label>
+<textarea class="w-full px-4 py-2.5 rounded-lg border border-outline-variant bg-surface-bright font-body-md text-body-md" placeholder="Jelaskan detail apa saja yang telah dikerjakan..." rows="4"></textarea>
+</div>
+<div class="col-span-1">
+<label class="font-label-md text-label-md text-on-surface block mb-2">Status</label>
+<div class="flex flex-wrap gap-2">
+<label class="cursor-pointer">
+<input class="hidden peer" name="status" type="radio" value="pending"/>
+<div class="px-4 py-2 rounded-full border border-outline-variant bg-surface-bright text-outline peer-checked:bg-tertiary-fixed peer-checked:text-on-tertiary-fixed peer-checked:border-tertiary font-label-md text-label-md transition-all">Pending</div>
+</label>
+<label class="cursor-pointer">
+<input checked="" class="hidden peer" name="status" type="radio" value="progress"/>
+<div class="px-4 py-2 rounded-full border border-outline-variant bg-surface-bright text-outline peer-checked:bg-primary-fixed peer-checked:text-on-primary-fixed peer-checked:border-primary font-label-md text-label-md transition-all">In Progress</div>
+</label>
+<label class="cursor-pointer">
+<input class="hidden peer" name="status" type="radio" value="done"/>
+<div class="px-4 py-2 rounded-full border border-outline-variant bg-surface-bright text-outline peer-checked:bg-secondary-container peer-checked:text-on-secondary-container peer-checked:border-secondary font-label-md text-label-md transition-all">Done</div>
+</label>
+</div>
+</div>
+<div class="col-span-1">
+<label class="font-label-md text-label-md text-on-surface block mb-2">Lampiran</label>
+<div class="relative group">
+<div class="w-full px-4 py-2.5 rounded-lg border border-dashed border-outline-variant bg-surface-bright flex items-center justify-center gap-2 cursor-pointer hover:border-primary hover:bg-primary/5 transition-all">
+<span class="material-symbols-outlined text-outline group-hover:text-primary">upload_file</span>
+<span class="font-body-md text-body-md text-outline group-hover:text-primary">Upload File (PDF/JPG)</span>
+</div>
+<input class="absolute inset-0 opacity-0 cursor-pointer" type="file"/>
+</div>
+</div>
+</div>
+<div class="flex items-center justify-end gap-3 pt-6 border-t border-outline-variant">
+<button class="px-6 py-2.5 rounded-lg border border-outline text-on-surface-variant font-title-md text-title-md hover:bg-surface-container-high transition-all" type="button">
+                                    Simpan Draft
+                                </button>
+<button class="px-6 py-2.5 rounded-lg bg-secondary text-on-secondary font-title-md text-title-md shadow-sm hover:opacity-90 active:scale-95 transition-all" type="submit">
+                                    Kirim Laporan
+                                </button>
+</div>
+</form>
+</div>
+<!-- Statistics Summary Bento (Asymmetric) -->
+<div class="mt-gutter grid grid-cols-3 gap-stack_md">
+<div class="col-span-1 bg-surface-container-lowest p-6 rounded-xl border border-outline-variant/30 card-elevation">
+<p class="font-label-md text-label-md text-outline mb-1">Total Jam Minggu Ini</p>
+<h4 class="font-headline-md text-headline-md text-primary font-bold">38.5h</h4>
+<div class="mt-4 h-1 w-full bg-surface-container-high rounded-full overflow-hidden">
+<div class="h-full bg-primary w-[85%]"></div>
+</div>
+</div>
+<div class="col-span-2 bg-primary p-6 rounded-xl border border-primary/20 card-elevation text-on-primary relative overflow-hidden">
+<div class="relative z-10 flex justify-between items-start">
+<div>
+<p class="font-label-md text-label-md text-primary-fixed opacity-80 mb-1">Performa Bulan Ini</p>
+<h4 class="font-headline-md text-headline-md font-bold">Luar Biasa!</h4>
+<p class="mt-2 font-body-md text-body-md text-primary-fixed opacity-90 max-w-xs">Anda telah menyelesaikan 12 tugas utama lebih awal dari jadwal.</p>
+</div>
+<span class="material-symbols-outlined text-[48px] opacity-20" style="font-variation-settings: 'FILL' 1;">workspace_premium</span>
+</div>
+<div class="absolute -right-4 -bottom-4 w-24 h-24 bg-white opacity-5 rounded-full"></div>
+</div>
+</div>
+</div>
+<!-- Right Section: To-Do List & Status -->
+<div class="col-span-12 lg:col-span-4 space-y-gutter">
+<!-- To-Do List Card -->
+<div class="bg-surface-container-lowest rounded-xl card-elevation border border-outline-variant/30 overflow-hidden">
+<div class="px-6 py-4 border-b border-outline-variant flex items-center justify-between">
+<h3 class="font-title-md text-title-md text-on-surface">Daftar Tugas Hari Ini</h3>
+<span class="px-2 py-0.5 rounded bg-primary-container text-on-primary-container font-label-sm text-label-sm">4 Tugas</span>
+</div>
+<div class="p-2">
+<div class="space-y-1">
+<!-- Todo Item 1 -->
+<div class="flex items-start gap-3 p-4 rounded-lg hover:bg-surface-container-low transition-colors group cursor-pointer">
+<div class="mt-1 w-5 h-5 rounded border-2 border-outline-variant flex items-center justify-center group-hover:border-primary transition-colors">
+<span class="material-symbols-outlined text-xs text-white opacity-0 group-hover:opacity-100 font-bold">check</span>
+</div>
+<div class="flex-1">
+<p class="font-body-md text-body-md font-semibold text-on-surface">API Endpoint Validation</p>
+<p class="font-label-sm text-label-sm text-outline">Internal CRM Project</p>
+</div>
+<span class="px-2 py-0.5 rounded-full bg-error-container text-on-error-container font-label-sm text-label-sm">High</span>
+</div>
+<!-- Todo Item 2 -->
+<div class="flex items-start gap-3 p-4 rounded-lg hover:bg-surface-container-low transition-colors group cursor-pointer">
+<div class="mt-1 w-5 h-5 rounded border-2 border-secondary bg-secondary flex items-center justify-center">
+<span class="material-symbols-outlined text-xs text-on-secondary font-bold" style="font-variation-settings: 'FILL' 1;">check</span>
+</div>
+<div class="flex-1">
+<p class="font-body-md text-body-md font-semibold text-outline line-through">Standup Meeting</p>
+<p class="font-label-sm text-label-sm text-outline/50 line-through">09:00 - 09:30 WIB</p>
+</div>
+</div>
+<!-- Todo Item 3 -->
+<div class="flex items-start gap-3 p-4 rounded-lg hover:bg-surface-container-low transition-colors group cursor-pointer">
+<div class="mt-1 w-5 h-5 rounded border-2 border-outline-variant flex items-center justify-center group-hover:border-primary transition-colors">
+<span class="material-symbols-outlined text-xs text-white opacity-0 group-hover:opacity-100 font-bold">check</span>
+</div>
+<div class="flex-1">
+<p class="font-body-md text-body-md font-semibold text-on-surface">Review PR #240</p>
+<p class="font-label-sm text-label-sm text-outline">Frontend Components</p>
+</div>
+<span class="px-2 py-0.5 rounded-full bg-secondary-container text-on-secondary-container font-label-sm text-label-sm">Med</span>
+</div>
+</div>
+<button class="w-full mt-2 py-3 border-t border-outline-variant/30 font-label-md text-label-md text-primary hover:bg-primary/5 transition-all">
+                                Lihat Semua Tugas
+                            </button>
+</div>
+</div>
+<!-- Calendar Mini View -->
+<div class="bg-surface-container-lowest rounded-xl card-elevation border border-outline-variant/30 p-6">
+<div class="flex items-center justify-between mb-4">
+<h3 class="font-title-md text-title-md text-on-surface">Jadwal Mendatang</h3>
+<span class="material-symbols-outlined text-outline cursor-pointer hover:text-primary">more_vert</span>
+</div>
+<div class="space-y-4">
+<div class="flex gap-4">
+<div class="flex-none w-12 h-12 rounded-lg bg-surface-container-high flex flex-col items-center justify-center">
+<p class="font-label-sm text-[10px] text-outline uppercase">Okt</p>
+<p class="font-title-md text-title-md font-bold text-on-surface">24</p>
+</div>
+<div>
+<p class="font-body-md text-body-md font-semibold text-on-surface">Sprint Planning Q4</p>
+<p class="font-label-sm text-label-sm text-outline">14:00 - 15:30 • Zoom Meeting</p>
+</div>
+</div>
+<div class="flex gap-4">
+<div class="flex-none w-12 h-12 rounded-lg bg-surface-container-high flex flex-col items-center justify-center">
+<p class="font-label-sm text-[10px] text-outline uppercase">Okt</p>
+<p class="font-title-md text-title-md font-bold text-on-surface">26</p>
+</div>
+<div>
+<p class="font-body-md text-body-md font-semibold text-on-surface">Monthly Evaluation</p>
+<p class="font-label-sm text-label-sm text-outline">10:00 - 11:00 • Ruang Rapat A</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Weather/Motivation Widget -->
+<div class="bg-gradient-to-br from-tertiary-container to-tertiary p-6 rounded-xl card-elevation text-on-tertiary-container">
+<div class="flex items-center justify-between">
+<span class="material-symbols-outlined text-[32px]">light_mode</span>
+<span class="font-headline-md text-headline-md font-bold">28°C</span>
+</div>
+<p class="mt-4 font-title-md text-title-md font-bold text-white">Semangat pagi, Budi!</p>
+<p class="mt-1 font-body-md text-body-md text-white/80 italic">"Fokus pada kemajuan, bukan kesempurnaan."</p>
+</div>
+</div>
+</div>
+</div>
+</main>
+<script>
+        // Micro-interactions and Copy Logic
+        function copyYesterday() {
+            const form = document.getElementById('reportForm');
+            const inputs = form.querySelectorAll('input, textarea, select');
+            
+            // Add a subtle flash effect
+            form.classList.add('opacity-50', 'scale-[0.99]');
+            
+            setTimeout(() => {
+                // Mocking data population
+                form.querySelector('input[type="text"]').value = "Refactor Authentication Logic and Middleware";
+                form.querySelector('textarea').value = "Melanjutkan pekerjaan kemarin pada bagian auth middleware. Menambahkan sistem token rotasi dan validasi scope user di level router.";
+                form.querySelector('select').value = "PerformFlow UI Upgrade";
+                form.querySelector('input[type="number"]').value = "4.5";
+                
+                form.classList.remove('opacity-50', 'scale-[0.99]');
+                
+                // Show a mini notification (simplified)
+                alert('Data kemarin berhasil disalin!');
+            }, 300);
+        }
+
+        // Form submission prevention for demo
+        document.getElementById('reportForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            alert('Laporan sedang dikirim...');
+        });
+    </script>
+</body></html>

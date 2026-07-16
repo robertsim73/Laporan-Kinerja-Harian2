@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+
+<html class="light" lang="id"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Riwayat &amp; Kalender Laporan | PerformFlow</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "secondary-fixed-dim": "#88d982",
+                      "primary": "#003178",
+                      "error-container": "#ffdad6",
+                      "on-tertiary-fixed-variant": "#773200",
+                      "on-surface": "#191c1e",
+                      "primary-fixed": "#d9e2ff",
+                      "on-tertiary": "#ffffff",
+                      "on-surface-variant": "#434652",
+                      "on-error-container": "#93000a",
+                      "on-secondary-fixed-variant": "#005312",
+                      "surface-tint": "#2b5bb5",
+                      "on-secondary-container": "#217128",
+                      "on-tertiary-fixed": "#331200",
+                      "on-secondary-fixed": "#002204",
+                      "on-tertiary-container": "#ffa777",
+                      "tertiary-container": "#7f3600",
+                      "surface-variant": "#e0e3e5",
+                      "primary-container": "#0d47a1",
+                      "secondary-fixed": "#a3f69c",
+                      "tertiary": "#5b2500",
+                      "surface-dim": "#d8dadc",
+                      "surface-bright": "#f8f9fb",
+                      "secondary": "#1b6d24",
+                      "inverse-on-surface": "#eff1f3",
+                      "background": "#f8f9fb",
+                      "surface-container-lowest": "#ffffff",
+                      "surface-container-highest": "#e0e3e5",
+                      "on-secondary": "#ffffff",
+                      "inverse-primary": "#b0c6ff",
+                      "surface": "#f8f9fb",
+                      "surface-container": "#eceef0",
+                      "outline-variant": "#c3c6d4",
+                      "on-background": "#191c1e",
+                      "error": "#ba1a1a",
+                      "surface-container-high": "#e6e8ea",
+                      "secondary-container": "#a0f399",
+                      "tertiary-fixed-dim": "#ffb68f",
+                      "on-primary-container": "#a1bbff",
+                      "on-error": "#ffffff",
+                      "on-primary-fixed-variant": "#00429c",
+                      "inverse-surface": "#2d3133",
+                      "primary-fixed-dim": "#b0c6ff",
+                      "on-primary": "#ffffff",
+                      "surface-container-low": "#f2f4f6",
+                      "on-primary-fixed": "#001945",
+                      "tertiary-fixed": "#ffdbca",
+                      "outline": "#737783"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "gutter": "24px",
+                      "stack_lg": "24px",
+                      "stack_md": "16px",
+                      "margin_desktop": "32px",
+                      "sidebar_width": "260px",
+                      "margin_mobile": "16px",
+                      "container_max_width": "1440px",
+                      "stack_sm": "8px"
+              },
+              "fontFamily": {
+                      "body-md": ["Inter"],
+                      "body-lg": ["Inter"],
+                      "title-md": ["Inter"],
+                      "headline-lg-mobile": ["Inter"],
+                      "label-sm": ["Inter"],
+                      "headline-md": ["Inter"],
+                      "headline-lg": ["Inter"],
+                      "display-lg": ["Inter"],
+                      "label-md": ["Inter"],
+                      "title-lg": ["Inter"]
+              },
+              "fontSize": {
+                      "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                      "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                      "title-md": ["16px", {"lineHeight": "24px", "fontWeight": "600"}],
+                      "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                      "label-sm": ["11px", {"lineHeight": "14px", "fontWeight": "600"}],
+                      "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                      "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                      "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                      "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                      "title-lg": ["20px", {"lineHeight": "28px", "fontWeight": "600"}]
+              }
+            },
+          },
+        }
+    </script>
+<style>
+        body { background-color: #F5F7F9; font-family: 'Inter', sans-serif; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .active-dot-green { @apply bg-secondary shadow-[0_0_8px_rgba(27,109,36,0.4)]; }
+        .active-dot-amber { @apply bg-tertiary shadow-[0_0_8px_rgba(127,54,0,0.4)]; }
+        .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); }
+        .glass-card { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.3); }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+    </style>
+</head>
+<body class="text-on-surface">
+<!-- Sidebar Navigation -->
+<aside class="fixed left-0 top-0 h-full w-[260px] flex flex-col p-4 z-40 bg-surface-container border-r border-outline-variant">
+<div class="mb-10 px-2 flex items-center gap-3">
+<div class="w-10 h-10 bg-primary-container rounded-lg flex items-center justify-center text-white">
+<span class="material-symbols-outlined">analytics</span>
+</div>
+<div>
+<h1 class="font-title-lg text-title-lg font-black text-primary">Enterprise HR</h1>
+<p class="font-label-md text-label-md text-on-surface-variant opacity-70">Management Portal</p>
+</div>
+</div>
+<nav class="flex-1 space-y-2">
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-all duration-200 group" href="#">
+<span class="material-symbols-outlined group-hover:text-primary">dashboard</span>
+<span class="font-label-md text-label-md">Employee Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 bg-primary-container text-on-primary-container rounded-lg font-bold shadow-sm translate-x-1 transition-transform" href="#">
+<span class="material-symbols-outlined">history</span>
+<span class="font-label-md text-label-md">History</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-all duration-200 group" href="#">
+<span class="material-symbols-outlined group-hover:text-primary">group</span>
+<span class="font-label-md text-label-md">Team Overview</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-all duration-200 group" href="#">
+<span class="material-symbols-outlined group-hover:text-primary">analytics</span>
+<span class="font-label-md text-label-md">Analytics</span>
+</a>
+</nav>
+<button class="mt-6 bg-primary text-on-primary font-title-md text-title-md py-3 rounded-xl flex items-center justify-center gap-2 shadow-lg hover:brightness-110 active:scale-95 transition-all">
+<span class="material-symbols-outlined">add</span>
+            New Report
+        </button>
+<div class="mt-auto pt-6 border-t border-outline-variant space-y-1">
+<a class="flex items-center gap-3 px-4 py-2 text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-all duration-200" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-label-md text-label-md">Settings</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-2 text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-all duration-200" href="#">
+<span class="material-symbols-outlined">help</span>
+<span class="font-label-md text-label-md">Support</span>
+</a>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="ml-[260px] min-h-screen p-margin_desktop flex flex-col gap-gutter">
+<!-- Header Section -->
+<header class="flex items-center justify-between">
+<div>
+<h2 class="font-headline-lg text-headline-lg text-primary">Riwayat &amp; Kalender Laporan</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">Pantau progres laporan harian Anda secara terorganisir.</p>
+</div>
+<div class="flex items-center gap-4 bg-surface-container-lowest p-2 rounded-xl shadow-sm border border-outline-variant">
+<div class="flex items-center gap-2 px-3 border-r border-outline-variant">
+<span class="material-symbols-outlined text-primary">calendar_month</span>
+<select class="bg-transparent border-none focus:ring-0 font-label-md text-label-md text-on-surface cursor-pointer">
+<option>Oktober</option>
+<option selected="">November</option>
+<option>Desember</option>
+</select>
+</div>
+<div class="px-3">
+<select class="bg-transparent border-none focus:ring-0 font-label-md text-label-md text-on-surface cursor-pointer">
+<option>2023</option>
+<option selected="">2024</option>
+</select>
+</div>
+</div>
+</header>
+<!-- Content Grid -->
+<div class="grid grid-cols-12 gap-gutter flex-1">
+<!-- Calendar Section (Col 8) -->
+<section class="col-span-8 flex flex-col gap-gutter">
+<div class="bg-surface-container-lowest rounded-xl shadow-[0px_2px_4px_rgba(0,0,0,0.05)] border border-outline-variant overflow-hidden">
+<div class="p-6 border-b border-outline-variant flex items-center justify-between bg-surface-container-low">
+<h3 class="font-title-md text-title-md text-on-surface">November 2024</h3>
+<div class="flex gap-2">
+<button class="p-2 hover:bg-surface-container-high rounded-full transition-colors"><span class="material-symbols-outlined">chevron_left</span></button>
+<button class="p-2 hover:bg-surface-container-high rounded-full transition-colors"><span class="material-symbols-outlined">chevron_right</span></button>
+</div>
+</div>
+<!-- Calendar Body -->
+<div class="p-4">
+<div class="calendar-grid mb-2">
+<div class="text-center font-label-md text-label-md text-outline py-2">MIN</div>
+<div class="text-center font-label-md text-label-md text-outline py-2">SEN</div>
+<div class="text-center font-label-md text-label-md text-outline py-2">SEL</div>
+<div class="text-center font-label-md text-label-md text-outline py-2">RAB</div>
+<div class="text-center font-label-md text-label-md text-outline py-2">KAM</div>
+<div class="text-center font-label-md text-label-md text-outline py-2">JUM</div>
+<div class="text-center font-label-md text-label-md text-outline py-2">SAB</div>
+</div>
+<div class="calendar-grid gap-1">
+<!-- Empty days -->
+<div class="h-28 bg-surface-container-lowest opacity-20 border border-outline-variant/30 rounded-lg"></div>
+<div class="h-28 bg-surface-container-lowest opacity-20 border border-outline-variant/30 rounded-lg"></div>
+<div class="h-28 bg-surface-container-lowest opacity-20 border border-outline-variant/30 rounded-lg"></div>
+<div class="h-28 bg-surface-container-lowest opacity-20 border border-outline-variant/30 rounded-lg"></div>
+<div class="h-28 bg-surface-container-lowest opacity-20 border border-outline-variant/30 rounded-lg"></div>
+<!-- Real days starts -->
+<div class="h-28 bg-surface-container-low border border-outline-variant rounded-lg p-2 flex flex-col justify-between group hover:bg-primary-container/10 transition-colors cursor-pointer">
+<span class="font-label-md text-label-md">1</span>
+<div class="flex flex-wrap gap-1">
+<div class="w-2 h-2 rounded-full active-dot-green"></div>
+</div>
+</div>
+<div class="h-28 bg-surface-container-low border border-outline-variant rounded-lg p-2 flex flex-col justify-between group hover:bg-primary-container/10 transition-colors cursor-pointer">
+<span class="font-label-md text-label-md">2</span>
+<div class="flex flex-wrap gap-1">
+<div class="w-2 h-2 rounded-full active-dot-green"></div>
+</div>
+</div>
+<!-- Row 2 -->
+<div class="h-28 bg-surface-container-low border border-outline-variant rounded-lg p-2 flex flex-col justify-between group hover:bg-primary-container/10 transition-colors cursor-pointer">
+<span class="font-label-md text-label-md">3</span>
+<div class="flex flex-wrap gap-1"><div class="w-2 h-2 rounded-full active-dot-amber"></div></div>
+</div>
+<div class="h-28 bg-surface-container-low border border-outline-variant rounded-lg p-2 flex flex-col justify-between group hover:bg-primary-container/10 transition-colors cursor-pointer ring-2 ring-primary">
+<span class="font-label-md text-label-md font-bold text-primary">4</span>
+<div class="flex flex-wrap gap-1"><div class="w-2 h-2 rounded-full active-dot-green"></div></div>
+</div>
+<div class="h-28 bg-surface-container-low border border-outline-variant rounded-lg p-2 flex flex-col justify-between group hover:bg-primary-container/10 transition-colors cursor-pointer">
+<span class="font-label-md text-label-md">5</span>
+<div class="flex flex-wrap gap-1"><div class="w-2 h-2 rounded-full active-dot-green"></div></div>
+</div>
+<div class="h-28 bg-surface-container-low border border-outline-variant rounded-lg p-2 flex flex-col justify-between group hover:bg-primary-container/10 transition-colors cursor-pointer">
+<span class="font-label-md text-label-md">6</span>
+<div class="flex flex-wrap gap-1"><div class="w-2 h-2 rounded-full active-dot-amber"></div></div>
+</div>
+<div class="h-28 bg-surface-container-low border border-outline-variant rounded-lg p-2 flex flex-col justify-between group hover:bg-primary-container/10 transition-colors cursor-pointer">
+<span class="font-label-md text-label-md">7</span>
+<div class="flex flex-wrap gap-1"><div class="w-2 h-2 rounded-full active-dot-green"></div></div>
+</div>
+<div class="h-28 bg-surface-container-low border border-outline-variant rounded-lg p-2 flex flex-col justify-between group hover:bg-primary-container/10 transition-colors cursor-pointer">
+<span class="font-label-md text-label-md">8</span>
+<div class="flex flex-wrap gap-1"><div class="w-2 h-2 rounded-full active-dot-green"></div></div>
+</div>
+<div class="h-28 bg-surface-container-low border border-outline-variant rounded-lg p-2 flex flex-col justify-between group hover:bg-primary-container/10 transition-colors cursor-pointer">
+<span class="font-label-md text-label-md">9</span>
+<div class="flex flex-wrap gap-1"><div class="w-2 h-2 rounded-full active-dot-green"></div></div>
+</div>
+<!-- Simple repeat for filler -->
+<script>
+                                const calendar = document.querySelector('.calendar-grid:last-child');
+                                for(let i=10; i<=30; i++) {
+                                    const day = document.createElement('div');
+                                    day.className = 'h-28 bg-surface-container-low border border-outline-variant rounded-lg p-2 flex flex-col justify-between group hover:bg-primary-container/10 transition-colors cursor-pointer';
+                                    const isDone = Math.random() > 0.3;
+                                    day.innerHTML = `
+                                        <span class="font-label-md text-label-md">${i}</span>
+                                        <div class="flex flex-wrap gap-1">
+                                            <div class="w-2 h-2 rounded-full ${isDone ? 'active-dot-green' : 'active-dot-amber'}"></div>
+                                        </div>
+                                    `;
+                                    calendar.appendChild(day);
+                                }
+                            </script>
+</div>
+</div>
+</div>
+<!-- Legend -->
+<div class="flex items-center gap-6 px-4">
+<div class="flex items-center gap-2">
+<div class="w-3 h-3 rounded-full bg-secondary"></div>
+<span class="font-label-md text-label-md text-on-surface-variant">Laporan Selesai</span>
+</div>
+<div class="flex items-center gap-2">
+<div class="w-3 h-3 rounded-full bg-tertiary"></div>
+<span class="font-label-md text-label-md text-on-surface-variant">Laporan Tertunda</span>
+</div>
+<div class="flex items-center gap-2">
+<div class="w-3 h-3 rounded-full bg-error"></div>
+<span class="font-label-md text-label-md text-on-surface-variant">Ditolak</span>
+</div>
+</div>
+</section>
+<!-- Sidebar Info (Col 4) -->
+<aside class="col-span-4 flex flex-col gap-gutter">
+<!-- Summary Card -->
+<div class="bg-primary text-on-primary p-6 rounded-xl shadow-lg relative overflow-hidden">
+<div class="relative z-10">
+<h4 class="font-title-lg text-title-lg mb-1">Ringkasan Mingguan</h4>
+<p class="font-label-md text-label-md opacity-80 mb-6">4 Nov - 10 Nov 2024</p>
+<div class="flex justify-between items-end">
+<div>
+<span class="text-4xl font-bold">92%</span>
+<p class="font-label-md text-label-md opacity-80">Skor Kepatuhan</p>
+</div>
+<div class="text-right">
+<span class="font-headline-md text-headline-md">6/7</span>
+<p class="font-label-md text-label-md opacity-80">Laporan Selesai</p>
+</div>
+</div>
+</div>
+<!-- Decorative Element -->
+<div class="absolute -right-10 -bottom-10 w-40 h-40 bg-white/10 rounded-full blur-3xl"></div>
+</div>
+<!-- Selected Date Detail -->
+<div class="bg-surface-container-lowest rounded-xl shadow-[0px_2px_4px_rgba(0,0,0,0.05)] border border-outline-variant flex-1 flex flex-col overflow-hidden">
+<div class="p-5 border-b border-outline-variant bg-surface-container-low flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="bg-primary-container/10 p-2 rounded-lg text-primary">
+<span class="material-symbols-outlined">event</span>
+</div>
+<h4 class="font-title-md text-title-md">Senin, 4 Nov</h4>
+</div>
+<span class="px-3 py-1 bg-secondary/10 text-secondary text-[10px] font-bold rounded-full border border-secondary/20">DONE</span>
+</div>
+<div class="p-5 space-y-6 overflow-y-auto">
+<div class="space-y-2">
+<label class="font-label-md text-label-md text-outline uppercase tracking-wider">Aktivitas Utama</label>
+<div class="bg-surface-container-low p-4 rounded-lg border border-outline-variant">
+<p class="font-body-md text-body-md text-on-surface">Finalisasi modul kalender untuk HR Portal dan sinkronisasi API data karyawan.</p>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div class="space-y-1">
+<label class="font-label-md text-label-md text-outline uppercase tracking-wider">Waktu Mulai</label>
+<p class="font-title-md text-title-md">08:30 WIB</p>
+</div>
+<div class="space-y-1">
+<label class="font-label-md text-label-md text-outline uppercase tracking-wider">Waktu Selesai</label>
+<p class="font-title-md text-title-md">17:45 WIB</p>
+</div>
+</div>
+<div class="space-y-2">
+<label class="font-label-md text-label-md text-outline uppercase tracking-wider">Lampiran</label>
+<div class="flex items-center gap-3 p-3 border border-outline-variant rounded-lg hover:bg-surface-container-low transition-colors cursor-pointer">
+<span class="material-symbols-outlined text-primary">description</span>
+<div class="flex-1 overflow-hidden">
+<p class="font-label-md text-label-md truncate">laporan_harian_v2.pdf</p>
+<p class="text-[10px] text-outline">2.4 MB</p>
+</div>
+<span class="material-symbols-outlined text-outline">download</span>
+</div>
+</div>
+<div class="pt-4 mt-auto">
+<button class="w-full py-3 bg-white border border-primary text-primary font-bold rounded-xl hover:bg-primary-container/5 transition-all">
+                                Lihat Detail Lengkap
+                            </button>
+</div>
+</div>
+</div>
+<!-- Recent Activities Mini List -->
+<div class="bg-surface-container-lowest rounded-xl shadow-[0px_2px_4px_rgba(0,0,0,0.05)] border border-outline-variant p-5">
+<h4 class="font-title-md text-title-md mb-4 flex items-center justify-between">
+                        Aktivitas Terbaru
+                        <span class="material-symbols-outlined text-outline cursor-pointer hover:text-primary">more_horiz</span>
+</h4>
+<div class="space-y-4">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-secondary/10 flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined text-[18px]">check_circle</span>
+</div>
+<div class="flex-1">
+<p class="font-label-md text-label-md leading-tight">Laporan 5 Nov Disetujui</p>
+<p class="text-[10px] text-outline">2 jam yang lalu</p>
+</div>
+</div>
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-tertiary/10 flex items-center justify-center text-tertiary">
+<span class="material-symbols-outlined text-[18px]">pending</span>
+</div>
+<div class="flex-1">
+<p class="font-label-md text-label-md leading-tight">Menunggu Review Laporan 6 Nov</p>
+<p class="text-[10px] text-outline">10 jam yang lalu</p>
+</div>
+</div>
+</div>
+</div>
+</aside>
+</div>
+</main>
+<!-- Success Feedback Overlay (Micro-interaction) -->
+<div class="fixed bottom-10 right-10 flex items-center gap-3 bg-secondary text-white px-6 py-4 rounded-xl shadow-2xl translate-y-20 opacity-0 transition-all duration-500 z-50" id="toast">
+<span class="material-symbols-outlined">check_circle</span>
+<span class="font-title-md text-title-md">Data berhasil dimuat!</span>
+</div>
+<script>
+        // Micro-interaction for page load
+        window.onload = () => {
+            const toast = document.getElementById('toast');
+            setTimeout(() => {
+                toast.classList.remove('translate-y-20', 'opacity-0');
+                setTimeout(() => {
+                    toast.classList.add('translate-y-20', 'opacity-0');
+                }, 3000);
+            }, 500);
+        };
+
+        // Custom interaction for calendar selection
+        document.querySelectorAll('.calendar-grid div').forEach(day => {
+            day.addEventListener('click', () => {
+                document.querySelectorAll('.calendar-grid div').forEach(d => d.classList.remove('ring-2', 'ring-primary'));
+                if (day.innerText.length > 0) {
+                   day.classList.add('ring-2', 'ring-primary');
+                }
+            });
+        });
+    </script>
+</body></html>
