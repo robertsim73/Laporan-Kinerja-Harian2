@@ -1,7 +1,7 @@
 import Sidebar from './components/Sidebar'
 import Header from './components/Header'
 import { supabase } from './lib/supabase'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 export default function App() {
   return (
@@ -14,6 +14,7 @@ export default function App() {
             <div className="col-span-12 lg:col-span-8">
               <ReportForm />
               <StatsSummary />
+              <DailyReportsList />
             </div>
             <div className="col-span-12 lg:col-span-4 space-y-gutter">
               <TodoList />
@@ -226,25 +227,133 @@ function ReportForm() {
 }
 
 function StatsSummary() {
+  const [stats, setStats] = useState({ totalHours: 0, completedTasks: 0 })
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    fetchStats()
+  }, [])
+
+  const fetchStats = async () => {
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) {
+      setLoading(false)
+      return
+    }
+
+    const { data: reports } = await supabase
+      .from('daily_reports')
+      .select('duration_hours, status')
+      .eq('user_id', user.id)
+
+    if (reports) {
+      const totalHours = reports.reduce((sum, r) => sum + (r.duration_hours || 0), 0)
+      const completedTasks = reports.filter(r => r.status === 'done').length
+      setStats({ totalHours, completedTasks })
+    }
+    setLoading(false)
+  }
+
   return (
     <div className="mt-gutter grid grid-cols-3 gap-stack_md">
       <div className="col-span-1 bg-surface-container-lowest p-6 rounded-xl border border-outline-variant/30 card-elevation">
         <p className="font-label-md text-label-md text-outline mb-1">Total Jam Minggu Ini</p>
-        <h4 className="font-headline-md text-headline-md text-primary font-bold">38.5h</h4>
+        <h4 className="font-headline-md text-headline-md text-primary font-bold">{loading ? '...' : `${stats.totalHours.toFixed(1)}h`}</h4>
         <div className="mt-4 h-1 w-full bg-surface-container-high rounded-full overflow-hidden">
-          <div className="h-full bg-primary w-[85%]"></div>
+          <div className="h-full bg-primary" style={{ width: `${Math.min((stats.totalHours / 40) * 100, 100)}%` }}></div>
         </div>
       </div>
       <div className="col-span-2 bg-primary p-6 rounded-xl border border-primary/20 card-elevation text-on-primary relative overflow-hidden">
         <div className="relative z-10 flex justify-between items-start">
           <div>
             <p className="font-label-md text-label-md text-primary-fixed opacity-80 mb-1">Performa Bulan Ini</p>
-            <h4 className="font-headline-md text-headline-md font-bold">Luar Biasa!</h4>
-            <p className="mt-2 font-body-md text-body-md text-primary-fixed opacity-90 max-w-xs">Anda telah menyelesaikan 12 tugas utama lebih awal dari jadwal.</p>
+            <h4 className="font-headline-md text-headline-md font-bold">{stats.completedTasks > 0 ? 'Luar Biasa!' : 'Mulai Sekarang'}</h4>
+            <p className="mt-2 font-body-md text-body-md text-primary-fixed opacity-90 max-w-xs">
+              {stats.completedTasks > 0 
+                ? `Anda telah menyelesaikan ${stats.completedTasks} tugas utama lebih awal dari jadwal.`
+                : 'Laporkan progres tugas Anda hari ini untuk melihat statistik performa.'}
+            </p>
           </div>
           <span className="material-symbols-outlined text-[48px] opacity-20" style={{ fontVariationSettings: "'FILL' 1" }}>workspace_premium</span>
         </div>
         <div className="absolute -right-4 -bottom-4 w-24 h-24 bg-white opacity-5 rounded-full"></div>
+      </div>
+    </div>
+  )
+}
+
+function DailyReportsList() {
+  const [reports, setReports] = useState([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    fetchReports()
+  }, [])
+
+  const fetchReports = async () => {
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) {
+      setLoading(false)
+      return
+    }
+
+    const { data } = await supabase
+      .from('daily_reports')
+      .select('*')
+      .eq('user_id', user.id)
+      .order('report_date', { ascending: false })
+      .limit(10)
+
+    if (data) setReports(data)
+    setLoading(false)
+  }
+
+  const getStatusBadge = (status) => {
+    const styles = {
+      pending: 'bg-error-container text-on-error-container',
+      progress: 'bg-primary-container text-on-primary-container',
+      done: 'bg-secondary-container text-on-secondary-container',
+    }
+    const labels = { pending: 'Pending', progress: 'In Progress', done: 'Done' }
+    return (
+      <span className={`px-2 py-0.5 rounded-full font-label-sm text-label-sm ${styles[status] || styles.progress}`}>
+        {labels[status] || status}
+      </span>
+    )
+  }
+
+  return (
+    <div className="mt-gutter bg-surface-container-lowest rounded-xl card-elevation border border-outline-variant/30 overflow-hidden">
+      <div className="px-6 py-4 border-b border-outline-variant flex items-center justify-between">
+        <h3 className="font-title-md text-title-md text-on-surface">Laporan Terbaru</h3>
+        <span className="px-2 py-0.5 rounded bg-primary-container text-on-primary-container font-label-sm text-label-sm">
+          {reports.length} Laporan
+        </span>
+      </div>
+      <div className="p-2">
+        {loading ? (
+          <div className="p-6 text-center text-outline">Memuat laporan...</div>
+        ) : reports.length === 0 ? (
+          <div className="p-6 text-center text-outline">Belum ada laporan. Buat laporan pertama Anda!</div>
+        ) : (
+          <div className="space-y-1">
+            {reports.map((report) => (
+              <div key={report.id} className="flex items-start gap-3 p-4 rounded-lg hover:bg-surface-container-low transition-colors">
+                <div className="flex-1">
+                  <p className="font-body-md text-body-md font-semibold text-on-surface">{report.title}</p>
+                  <p className="font-label-sm text-label-sm text-outline">{report.project_category} • {report.duration_hours} jam</p>
+                  <p className="font-body-md text-body-md text-outline mt-1 line-clamp-2">{report.description}</p>
+                </div>
+                <div className="flex flex-col items-end gap-2">
+                  {getStatusBadge(report.status)}
+                  <span className="font-label-sm text-label-sm text-outline">
+                    {new Date(report.report_date).toLocaleDateString('id-ID', { day: 'numeric', month: 'short' })}
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   )
