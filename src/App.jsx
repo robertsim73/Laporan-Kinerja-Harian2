@@ -1,5 +1,7 @@
 import Sidebar from './components/Sidebar'
 import Header from './components/Header'
+import { supabase } from './lib/supabase'
+import { useState } from 'react'
 
 export default function App() {
   return (
@@ -26,32 +28,62 @@ export default function App() {
 }
 
 function ReportForm() {
+  const [formData, setFormData] = useState({
+    title: '',
+    projectCategory: 'Pilih Proyek',
+    duration: '',
+    description: '',
+    status: 'progress',
+  })
+  const [loading, setLoading] = useState(false)
+
   const copyYesterday = () => {
-    const form = document.getElementById('reportForm')
-    if (!form) return
-    const inputs = form.querySelectorAll('input, textarea, select')
-    
-    form.classList.add('opacity-50', 'scale-[0.99]')
-    
-    setTimeout(() => {
-      const textInput = form.querySelector('input[type="text"]')
-      const textarea = form.querySelector('textarea')
-      const select = form.querySelector('select')
-      const numberInput = form.querySelector('input[type="number"]')
-      
-      if (textInput) textInput.value = 'Refactor Authentication Logic and Middleware'
-      if (textarea) textarea.value = 'Melanjutkan pekerjaan kemarin pada bagian auth middleware. Menambahkan sistem token rotasi dan validasi scope user di level router.'
-      if (select) select.value = 'PerformFlow UI Upgrade'
-      if (numberInput) numberInput.value = '4.5'
-      
-      form.classList.remove('opacity-50', 'scale-[0.99]')
-      alert('Data kemarin berhasil disalin!')
-    }, 300)
+    setFormData({
+      title: 'Refactor Authentication Logic and Middleware',
+      projectCategory: 'PerformFlow UI Upgrade',
+      duration: '4.5',
+      description: 'Melanjutkan pekerjaan kemarin pada bagian auth middleware. Menambahkan sistem token rotasi dan validasi scope user di level router.',
+      status: 'progress',
+    })
+    alert('Data kemarin berhasil disalin!')
   }
 
-  const handleSubmit = (e) => {
+  const handleChange = (e) => {
+    const { name, value } = e.target
+    setFormData(prev => ({ ...prev, [name]: value }))
+  }
+
+  const handleSubmit = async (e) => {
     e.preventDefault()
-    alert('Laporan sedang dikirim...')
+    setLoading(true)
+
+    const { error } = await supabase
+      .from('daily_reports')
+      .insert([
+        {
+          title: formData.title,
+          project_category: formData.projectCategory,
+          duration_hours: parseFloat(formData.duration) || 0,
+          description: formData.description,
+          status: formData.status,
+          report_date: new Date().toISOString().split('T')[0],
+        },
+      ])
+
+    setLoading(false)
+
+    if (error) {
+      alert('Gagal mengirim laporan: ' + error.message)
+    } else {
+      alert('Laporan berhasil dikirim!')
+      setFormData({
+        title: '',
+        projectCategory: 'Pilih Proyek',
+        duration: '',
+        description: '',
+        status: 'progress',
+      })
+    }
   }
 
   return (
@@ -70,7 +102,7 @@ function ReportForm() {
           Salin dari Kemarin
         </button>
       </div>
-      <form className="p-6 space-y-stack_md" id="reportForm" onSubmit={handleSubmit}>
+      <form className="p-6 space-y-stack_md" onSubmit={handleSubmit}>
         <div className="grid grid-cols-2 gap-stack_md">
           <div className="col-span-2">
             <label className="font-label-md text-label-md text-on-surface block mb-2">Judul Tugas</label>
@@ -78,11 +110,21 @@ function ReportForm() {
               className="w-full px-4 py-2.5 rounded-lg border border-outline-variant bg-surface-bright font-body-md text-body-md" 
               placeholder="Contoh: Implementasi API Dashboard" 
               type="text"
+              name="title"
+              value={formData.title}
+              onChange={handleChange}
+              required
             />
           </div>
           <div className="col-span-1">
             <label className="font-label-md text-label-md text-on-surface block mb-2">Kategori Proyek</label>
-            <select className="w-full px-4 py-2.5 rounded-lg border border-outline-variant bg-surface-bright font-body-md text-body-md">
+            <select 
+              className="w-full px-4 py-2.5 rounded-lg border border-outline-variant bg-surface-bright font-body-md text-body-md"
+              name="projectCategory"
+              value={formData.projectCategory}
+              onChange={handleChange}
+              required
+            >
               <option>Pilih Proyek</option>
               <option>PerformFlow UI Upgrade</option>
               <option>Internal Management System</option>
@@ -97,6 +139,10 @@ function ReportForm() {
                 placeholder="0.0" 
                 step="0.5" 
                 type="number"
+                name="duration"
+                value={formData.duration}
+                onChange={handleChange}
+                required
               />
               <span className="absolute right-4 top-1/2 -translate-y-1/2 text-outline font-label-md">jam</span>
             </div>
@@ -107,21 +153,46 @@ function ReportForm() {
               className="w-full px-4 py-2.5 rounded-lg border border-outline-variant bg-surface-bright font-body-md text-body-md" 
               placeholder="Jelaskan detail apa saja yang telah dikerjakan..." 
               rows="4"
+              name="description"
+              value={formData.description}
+              onChange={handleChange}
+              required
             />
           </div>
           <div className="col-span-1">
             <label className="font-label-md text-label-md text-on-surface block mb-2">Status</label>
             <div className="flex flex-wrap gap-2">
               <label className="cursor-pointer">
-                <input className="hidden peer" name="status" type="radio" value="pending" />
+                <input 
+                  className="hidden peer" 
+                  name="status" 
+                  type="radio" 
+                  value="pending" 
+                  checked={formData.status === 'pending'}
+                  onChange={handleChange}
+                />
                 <div className="px-4 py-2 rounded-full border border-outline-variant bg-surface-bright text-outline peer-checked:bg-tertiary-fixed peer-checked:text-on-tertiary-fixed peer-checked:border-tertiary font-label-md text-label-md transition-all">Pending</div>
               </label>
               <label className="cursor-pointer">
-                <input checked className="hidden peer" name="status" type="radio" value="progress" />
+                <input 
+                  className="hidden peer" 
+                  name="status" 
+                  type="radio" 
+                  value="progress" 
+                  checked={formData.status === 'progress'}
+                  onChange={handleChange}
+                />
                 <div className="px-4 py-2 rounded-full border border-outline-variant bg-surface-bright text-outline peer-checked:bg-primary-fixed peer-checked:text-on-primary-fixed peer-checked:border-primary font-label-md text-label-md transition-all">In Progress</div>
               </label>
               <label className="cursor-pointer">
-                <input className="hidden peer" name="status" type="radio" value="done" />
+                <input 
+                  className="hidden peer" 
+                  name="status" 
+                  type="radio" 
+                  value="done" 
+                  checked={formData.status === 'done'}
+                  onChange={handleChange}
+                />
                 <div className="px-4 py-2 rounded-full border border-outline-variant bg-surface-bright text-outline peer-checked:bg-secondary-container peer-checked:text-on-secondary-container peer-checked:border-secondary font-label-md text-label-md transition-all">Done</div>
               </label>
             </div>
@@ -141,8 +212,12 @@ function ReportForm() {
           <button className="px-6 py-2.5 rounded-lg border border-outline text-on-surface-variant font-title-md text-title-md hover:bg-surface-container-high transition-all" type="button">
             Simpan Draft
           </button>
-          <button className="px-6 py-2.5 rounded-lg bg-secondary text-on-secondary font-title-md text-title-md shadow-sm hover:opacity-90 active:scale-95 transition-all" type="submit">
-            Kirim Laporan
+          <button 
+            className="px-6 py-2.5 rounded-lg bg-secondary text-on-secondary font-title-md text-title-md shadow-sm hover:opacity-90 active:scale-95 transition-all disabled:opacity-50" 
+            type="submit"
+            disabled={loading}
+          >
+            {loading ? 'Mengirim...' : 'Kirim Laporan'}
           </button>
         </div>
       </form>
