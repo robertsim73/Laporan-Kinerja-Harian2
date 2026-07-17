@@ -58,6 +58,8 @@ function ReportForm() {
     e.preventDefault()
     setLoading(true)
 
+    const demoUserId = '00000000-0000-0000-0000-000000000001'
+
     const { error } = await supabase
       .from('daily_reports')
       .insert([
@@ -68,6 +70,7 @@ function ReportForm() {
           description: formData.description,
           status: formData.status,
           report_date: new Date().toISOString().split('T')[0],
+          user_id: demoUserId,
         },
       ])
 
@@ -84,6 +87,7 @@ function ReportForm() {
         description: '',
         status: 'progress',
       })
+      window.location.reload()
     }
   }
 
@@ -235,16 +239,12 @@ function StatsSummary() {
   }, [])
 
   const fetchStats = async () => {
-    const { data: { user } } = await supabase.auth.getUser()
-    if (!user) {
-      setLoading(false)
-      return
-    }
+    const demoUserId = '00000000-0000-0000-0000-000000000001'
 
     const { data: reports } = await supabase
       .from('daily_reports')
       .select('duration_hours, status')
-      .eq('user_id', user.id)
+      .eq('user_id', demoUserId)
 
     if (reports) {
       const totalHours = reports.reduce((sum, r) => sum + (r.duration_hours || 0), 0)
@@ -291,16 +291,12 @@ function DailyReportsList() {
   }, [])
 
   const fetchReports = async () => {
-    const { data: { user } } = await supabase.auth.getUser()
-    if (!user) {
-      setLoading(false)
-      return
-    }
+    const demoUserId = '00000000-0000-0000-0000-000000000001'
 
     const { data } = await supabase
       .from('daily_reports')
       .select('*')
-      .eq('user_id', user.id)
+      .eq('user_id', demoUserId)
       .order('report_date', { ascending: false })
       .limit(10)
 
