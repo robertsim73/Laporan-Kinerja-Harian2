@@ -55,20 +55,15 @@ create policy "Users can delete own reports"
 
 -- Storage bucket for report attachments
 insert into storage.buckets (id, name, public)
-values ('report-attachments', 'report-attachments', false)
+values ('report-attachments', 'report-attachments', true)
 on conflict (id) do nothing;
+
+-- CORS: configure di Supabase Dashboard > Storage > Settings > CORS jika akses lintas origin diblokir
 
 -- Storage policies for demo user
 create policy "Allow demo user upload attachments"
   on storage.objects for insert
   with check (
-    bucket_id = 'report-attachments' and
-    (storage.foldername(name))[1] = '00000000-0000-0000-0000-000000000001'
-  );
-
-create policy "Allow demo user view attachments"
-  on storage.objects for select
-  using (
     bucket_id = 'report-attachments' and
     (storage.foldername(name))[1] = '00000000-0000-0000-0000-000000000001'
   );
@@ -84,13 +79,6 @@ create policy "Allow demo user delete attachments"
 create policy "Users can upload attachments"
   on storage.objects for insert
   with check (
-    bucket_id = 'report-attachments' and
-    auth.uid()::text = (storage.foldername(name))[1]
-  );
-
-create policy "Users can view own attachments"
-  on storage.objects for select
-  using (
     bucket_id = 'report-attachments' and
     auth.uid()::text = (storage.foldername(name))[1]
   );

@@ -101,7 +101,10 @@ function ReportForm() {
 
     const { error: uploadError } = await supabase.storage
       .from('report-attachments')
-      .upload(filePath, file)
+      .upload(filePath, file, {
+        contentType: file.type || 'application/octet-stream',
+        upsert: false,
+      })
 
     if (uploadError) {
       throw uploadError
