@@ -38,6 +38,8 @@ function ReportForm() {
   })
   const [loading, setLoading] = useState(false)
   const [draftId, setDraftId] = useState(null)
+  const [file, setFile] = useState(null)
+  const [fileName, setFileName] = useState('')
 
   const demoUserId = '00000000-0000-0000-0000-000000000001'
 
@@ -78,6 +80,40 @@ function ReportForm() {
     alert('Data kemarin berhasil disalin!')
   }
 
+  const handleFileChange = (e) => {
+    const selected = e.target.files?.[0]
+    if (selected) {
+      if (selected.size > 5 * 1024 * 1024) {
+        alert('Ukuran file maksimal 5MB.')
+        e.target.value = ''
+        return
+      }
+      setFile(selected)
+      setFileName(selected.name)
+    }
+  }
+
+  const uploadFile = async () => {
+    if (!file) return null
+
+    const ext = file.name.split('.').pop()
+    const filePath = `${demoUserId}/${Date.now()}_${Math.random().toString(36).slice(2)}.${ext}`
+
+    const { error: uploadError } = await supabase.storage
+      .from('report-attachments')
+      .upload(filePath, file)
+
+    if (uploadError) {
+      throw uploadError
+    }
+
+    const { data } = supabase.storage
+      .from('report-attachments')
+      .getPublicUrl(filePath)
+
+    return data.publicUrl
+  }
+
   const handleChange = (e) => {
     const { name, value } = e.target
     setFormData(prev => ({ ...prev, [name]: value }))
@@ -91,6 +127,17 @@ function ReportForm() {
 
     setLoading(true)
 
+    let attachmentUrl = null
+    if (file) {
+      try {
+        attachmentUrl = await uploadFile()
+      } catch (err) {
+        setLoading(false)
+        alert('Gagal upload file: ' + (err.message || err))
+        return
+      }
+    }
+
     const payload = {
       title: formData.title,
       project_category: formData.projectCategory,
@@ -99,6 +146,7 @@ function ReportForm() {
       status: 'draft',
       report_date: new Date().toISOString().split('T')[0],
       user_id: demoUserId,
+      attachment_url: attachmentUrl,
     }
 
     let error
@@ -124,6 +172,17 @@ function ReportForm() {
     e.preventDefault()
     setLoading(true)
 
+    let attachmentUrl = null
+    if (file) {
+      try {
+        attachmentUrl = await uploadFile()
+      } catch (err) {
+        setLoading(false)
+        alert('Gagal upload file: ' + (err.message || err))
+        return
+      }
+    }
+
     const payload = {
       title: formData.title,
       project_category: formData.projectCategory,
@@ -132,6 +191,7 @@ function ReportForm() {
       status: formData.status || 'progress',
       report_date: new Date().toISOString().split('T')[0],
       user_id: demoUserId,
+      attachment_url: attachmentUrl,
     }
 
     let error
@@ -157,6 +217,8 @@ function ReportForm() {
         status: 'progress',
       })
       setDraftId(null)
+      setFile(null)
+      setFileName('')
       window.location.reload()
     }
   }
@@ -277,9 +339,16 @@ function ReportForm() {
             <div className="relative group">
               <div className="w-full px-4 py-2.5 rounded-lg border border-dashed border-outline-variant bg-surface-bright flex items-center justify-center gap-2 cursor-pointer hover:border-primary hover:bg-primary/5 transition-all">
                 <span className="material-symbols-outlined text-outline group-hover:text-primary">upload_file</span>
-                <span className="font-body-md text-body-md text-outline group-hover:text-primary">Upload File (PDF/JPG)</span>
+                <span className="font-body-md text-body-md text-outline group-hover:text-primary">
+                  {fileName || 'Upload File (PDF/JPG)'}
+                </span>
               </div>
-              <input className="absolute inset-0 opacity-0 cursor-pointer" type="file" />
+              <input 
+                className="absolute inset-0 opacity-0 cursor-pointer" 
+                type="file" 
+                accept=".pdf,.jpg,.jpeg,.png"
+                onChange={handleFileChange}
+              />
             </div>
           </div>
         </div>
@@ -415,6 +484,17 @@ function DailyReportsList() {
                   <p className="font-body-md text-body-md font-semibold text-on-surface">{report.title}</p>
                   <p className="font-label-sm text-label-sm text-outline">{report.project_category} • {report.duration_hours} jam</p>
                   <p className="font-body-md text-body-md text-outline mt-1 line-clamp-2">{report.description}</p>
+                  {report.attachment_url && (
+                    <a 
+                      href={report.attachment_url} 
+                      target="_blank" 
+                      rel="noreferrer"
+                      className="inline-flex items-center gap-1 mt-2 text-primary hover:underline font-label-md text-label-md"
+                    >
+                      <span className="material-symbols-outlined text-sm">attach_file</span>
+                      Lampiran
+                    </a>
+                  )}
                 </div>
                 <div className="flex flex-col items-end gap-2">
                   {getStatusBadge(report.status)}
@@ -518,7 +598,7 @@ function WeatherWidget() {
         <span className="material-symbols-outlined text-[32px]">light_mode</span>
         <span className="font-headline-md text-headline-md font-bold">28°C</span>
       </div>
-      <p className="mt-4 font-title-md text-title-md font-bold text-white">Semangat pagi, Budi!</p>
+      <p className="mt-4 font-title-md text-title-md font-bold text-white">Semangat pagi, Rally!</p>
       <p className="mt-1 font-body-md text-body-md text-white/80 italic">"Fokus pada kemajuan, bukan kesempurnaan."</p>
     </div>
   )
