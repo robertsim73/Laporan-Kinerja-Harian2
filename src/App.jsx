@@ -37,6 +37,35 @@ function ReportForm() {
     status: 'progress',
   })
   const [loading, setLoading] = useState(false)
+  const [draftId, setDraftId] = useState(null)
+
+  const demoUserId = '00000000-0000-0000-0000-000000000001'
+
+  useEffect(() => {
+    loadDraft()
+  }, [])
+
+  const loadDraft = async () => {
+    const { data } = await supabase
+      .from('daily_reports')
+      .select('*')
+      .eq('user_id', demoUserId)
+      .eq('status', 'draft')
+      .order('created_at', { ascending: false })
+      .limit(1)
+      .maybeSingle()
+
+    if (data) {
+      setDraftId(data.id)
+      setFormData({
+        title: data.title || '',
+        projectCategory: data.project_category || 'Pilih Proyek',
+        duration: data.duration_hours ? String(data.duration_hours) : '',
+        description: data.description || '',
+        status: data.status || 'progress',
+      })
+    }
+  }
 
   const copyYesterday = () => {
     setFormData({
@@ -54,25 +83,65 @@ function ReportForm() {
     setFormData(prev => ({ ...prev, [name]: value }))
   }
 
+  const saveDraft = async () => {
+    if (!formData.title.trim()) {
+      alert('Judul tugas harus diisi.')
+      return
+    }
+
+    setLoading(true)
+
+    const payload = {
+      title: formData.title,
+      project_category: formData.projectCategory,
+      duration_hours: parseFloat(formData.duration) || 0,
+      description: formData.description,
+      status: 'draft',
+      report_date: new Date().toISOString().split('T')[0],
+      user_id: demoUserId,
+    }
+
+    let error
+    if (draftId) {
+      const result = await supabase.from('daily_reports').update(payload).eq('id', draftId)
+      error = result.error
+    } else {
+      const result = await supabase.from('daily_reports').insert([payload])
+      error = result.error
+    }
+
+    setLoading(false)
+
+    if (error) {
+      alert('Gagal menyimpan draft: ' + error.message)
+    } else {
+      alert('Draft berhasil disimpan!')
+      loadDraft()
+    }
+  }
+
   const handleSubmit = async (e) => {
     e.preventDefault()
     setLoading(true)
 
-    const demoUserId = '00000000-0000-0000-0000-000000000001'
+    const payload = {
+      title: formData.title,
+      project_category: formData.projectCategory,
+      duration_hours: parseFloat(formData.duration) || 0,
+      description: formData.description,
+      status: formData.status || 'progress',
+      report_date: new Date().toISOString().split('T')[0],
+      user_id: demoUserId,
+    }
 
-    const { error } = await supabase
-      .from('daily_reports')
-      .insert([
-        {
-          title: formData.title,
-          project_category: formData.projectCategory,
-          duration_hours: parseFloat(formData.duration) || 0,
-          description: formData.description,
-          status: formData.status,
-          report_date: new Date().toISOString().split('T')[0],
-          user_id: demoUserId,
-        },
-      ])
+    let error
+    if (draftId) {
+      const result = await supabase.from('daily_reports').update(payload).eq('id', draftId)
+      error = result.error
+    } else {
+      const result = await supabase.from('daily_reports').insert([payload])
+      error = result.error
+    }
 
     setLoading(false)
 
@@ -87,6 +156,7 @@ function ReportForm() {
         description: '',
         status: 'progress',
       })
+      setDraftId(null)
       window.location.reload()
     }
   }
@@ -214,8 +284,13 @@ function ReportForm() {
           </div>
         </div>
         <div className="flex items-center justify-end gap-3 pt-6 border-t border-outline-variant">
-          <button className="px-6 py-2.5 rounded-lg border border-outline text-on-surface-variant font-title-md text-title-md hover:bg-surface-container-high transition-all" type="button">
-            Simpan Draft
+          <button 
+            className="px-6 py-2.5 rounded-lg border border-outline text-on-surface-variant font-title-md text-title-md hover:bg-surface-container-high transition-all disabled:opacity-50" 
+            type="button"
+            onClick={saveDraft}
+            disabled={loading}
+          >
+            {loading ? 'Menyimpan...' : 'Simpan Draft'}
           </button>
           <button 
             className="px-6 py-2.5 rounded-lg bg-secondary text-on-secondary font-title-md text-title-md shadow-sm hover:opacity-90 active:scale-95 transition-all disabled:opacity-50" 
@@ -309,8 +384,9 @@ function DailyReportsList() {
       pending: 'bg-error-container text-on-error-container',
       progress: 'bg-primary-container text-on-primary-container',
       done: 'bg-secondary-container text-on-secondary-container',
+      draft: 'bg-surface-container-high text-on-surface-variant',
     }
-    const labels = { pending: 'Pending', progress: 'In Progress', done: 'Done' }
+    const labels = { pending: 'Pending', progress: 'In Progress', done: 'Done', draft: 'Draft' }
     return (
       <span className={`px-2 py-0.5 rounded-full font-label-sm text-label-sm ${styles[status] || styles.progress}`}>
         {labels[status] || status}

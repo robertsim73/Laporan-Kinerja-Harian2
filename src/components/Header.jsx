@@ -16,8 +16,8 @@ export default function Header() {
         <div className="h-8 w-[1px] bg-outline-variant"></div>
         <div className="flex items-center gap-3 cursor-pointer group">
           <div className="text-right">
-            <p className="font-label-md text-label-md font-bold text-on-surface">Budi Santoso</p>
-            <p className="font-label-sm text-[10px] text-outline uppercase tracking-wider">Senior Developer</p>
+            <p className="font-label-md text-label-md font-bold text-on-surface">Rally Gultom</p>
+            <p className="font-label-sm text-[10px] text-outline uppercase tracking-wider">16 juli 2026</p>
           </div>
           <img 
             className="w-10 h-10 rounded-full border-2 border-primary-container object-cover" 
